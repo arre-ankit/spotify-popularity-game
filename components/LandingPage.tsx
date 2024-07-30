@@ -64,7 +64,7 @@ export default function LandingPage() {
                   className="rounded-lg shadow-md"
                 />
                 <Image
-                  src="/Jab we met.png"
+                  src="/Tum_Se.png"
                   width={200}
                   height={200}
                   alt="Album Cover 2"
