@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button"
 import cover from 'public/cover.png'
 import Image from 'next/image'
 
+export const runtime = 'edge'
+
 export default function LandingPage() {
   return (
     <div className="flex flex-col min-h-dvh">

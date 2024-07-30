@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { AlertCircle, Music } from 'lucide-react';
 import { useRouter } from 'next/navigation'
 
+export const runtime = 'edge'
 
 // Function to get Spotify access token
 const getAccessToken = async () => {

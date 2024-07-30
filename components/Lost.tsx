@@ -2,6 +2,7 @@ import React from 'react'
 import Link from 'next/link'
 
 type Props = {}
+export const runtime = 'edge'
 
 const Lost = (props: Props) => {
   return (
