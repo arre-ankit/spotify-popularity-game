@@ -28,7 +28,7 @@ const getAccessToken = async () => {
 // Function to fetch random tracks from Spotify
 //@ts-ignore
 const fetchRandomTracks = async (accessToken) => {
-  const response = await fetch('https://api.spotify.com/v1/search?q=year:2000-2024&type=track&limit=50&market=IN', {
+  const response = await fetch('https://api.spotify.com/v1/search?q=year:1995-2024&type=track&limit=50&market=IN', {
     headers: {
       'Authorization': 'Bearer ' + accessToken
     }
@@ -117,6 +117,7 @@ const SpotifyPopularityGame = () => {
   }
 
   return (
+    
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4 text-center">Spotify Popularity Game</h1>
       <div className="text-center mb-4">
@@ -159,8 +160,9 @@ const SpotifyPopularityGame = () => {
         ))}
       </div>
       <div>
-      <p className="text-2xl font-bold flex justify-center">Score: {score}</p>
+      
       </div>
+      <p className="text-2xl font-bold flex justify-end -mr-40">Score: {score}</p>
     </div>
   );
 };
