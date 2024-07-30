@@ -120,7 +120,6 @@ const SpotifyPopularityGame = () => {
     <div className="p-4 max-w-4xl mx-auto">
       <h1 className="text-2xl font-bold mb-4 text-center">Spotify Popularity Game</h1>
       <div className="text-center mb-4">
-        <p className="text-xl">Score: {score}</p>
       </div>
       {message && (
         <div className="mb-4 p-2 bg-blue-100 text-blue-700 rounded flex items-center justify-center">
@@ -128,11 +127,12 @@ const SpotifyPopularityGame = () => {
           {message}
         </div>
       )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
         {currentPair.map((track:any) => (
             //@ts-ignore
-          <Card key={track.id} className="flex flex-col h-full">
-            <img src={track.image} alt={track.name} className="h-64 object-cover" />
+          <div>
+            <Card key={track.id} className="flex flex-col h-full">
+            <img src={track.image} alt={track.name} className="h-fit" />
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Music className="mr-2" />
@@ -151,13 +151,16 @@ const SpotifyPopularityGame = () => {
                 onClick={() => handleGuess(track)}
                 className="mt-4 w-full"
               >
-                Select
+                This
               </Button>
             </CardContent>
-          </Card>
+            </Card>
+          </div>
         ))}
       </div>
-      Which song is more popular?
+      <div>
+      <p className="text-2xl font-bold flex justify-center">Score: {score}</p>
+      </div>
     </div>
   );
 };
