@@ -49,7 +49,7 @@ Built with:
 1. Clone the repo
 
 ```bash
-git clone git@github.com:arre-ankit/speechsync-ai.git
+git clone git@github.com:arre-ankit/spotify-popularity-game.git
 ```
 
 2. Set up the Next.js app
