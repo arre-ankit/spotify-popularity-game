@@ -99,6 +99,8 @@ const SpotifyPopularityGame = () => {
     } 
     else {
         setMessage('Sorry, that was incorrect.');
+        //@ts-ignore
+        localStorage.setItem('score', score);
         setScore(0);
         setTimeout(() => {
             router.push('/lost');
