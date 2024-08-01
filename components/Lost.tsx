@@ -24,7 +24,7 @@ const Lost = (props: Props) => {
         <p className="max-w-[600px] text-lg text-white md:text-xl">
           Play again to beat your score.
         </p>
-        <a href='/spotify' className='flex justify-center items-center px-7 ml-20 h-30 w-30 rounded-sm bg-white'>Replay</a>
+        <a href='/spotify' className='flex justify-center items-center px-7 py-3 ml-5 md:ml-20 h-50 w-50 rounded-sm bg-white text-xl font-bold'>Replay</a>
       </div>
     </div>
   );

@@ -67,3 +67,29 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes scoreIncrease {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+}
+
+.score-animation {
+  position: absolute;
+  color: green;
+  animation: scoreIncrease 1s ease-out forwards;
+  font-size: 2rem;
+  z-index: 10;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
