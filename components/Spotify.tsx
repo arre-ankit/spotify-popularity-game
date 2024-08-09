@@ -30,7 +30,7 @@ const getAccessToken = async () => {
 //@ts-ignore
 const fetchRandomTracks = async (accessToken) => {
   const response = await fetch(
-    "https://api.spotify.com/v1/search?q=year:1995-2024&type=track&limit=50&market=IN",
+    "https://api.spotify.com/v1/search?q=year:2000-2024&type=track&limit=50&market=IN",
     {
       headers: {
         Authorization: "Bearer " + accessToken,
@@ -55,10 +55,18 @@ const SpotifyPopularityGame = () => {
   const [tracks, setTracks] = useState([]);
   const [currentPair, setCurrentPair] = useState([]);
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
+
+  useEffect(() => {
+    const storedHighScore = localStorage.getItem('highScore');
+    if (storedHighScore) {
+      setHighScore(Number(storedHighScore));
+    }
+  }, []);
 
   useEffect(() => {
     const fetchTracks = async () => {
@@ -97,7 +105,15 @@ const SpotifyPopularityGame = () => {
     const otherTrack = currentPair.find((track) => track.id !== guessedTrack.id);
     //@ts-ignore
     if (guessedTrack.popularity > otherTrack.popularity) {
-      setScore((prevScore) => prevScore + 1);
+      const newScore = score + 1;
+      setScore(newScore);
+
+      // Update high score if new score is greater than the current high score
+      if (newScore > highScore) {
+        setHighScore(newScore);
+        localStorage.setItem("highScore", newScore.toString());
+      }
+
       setMessage("Correct! You earned a point.");
       setShowAnimation(true); // Trigger the animation
       setTimeout(() => setShowAnimation(false), 1000);
@@ -120,6 +136,7 @@ const SpotifyPopularityGame = () => {
   if (error) {
     return <div className="text-center mt-8 text-red-500">{error}</div>;
   }
+
 
   return (
     <div className="p-4 max-w-4xl mx-auto relative"> 
