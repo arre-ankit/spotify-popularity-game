@@ -17,11 +17,9 @@ const Lost = (props: Props) => {
     setHighScore(storedHighScore);
    
     //@ts-ignore
-    if(currentScore > storedHighScore){
+    if(currentScore >= storedHighScore){
       setIsNewHighScore(true);
     }
-
-
   }, []);
 
   return (
