@@ -1,11 +1,23 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, Music } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export const runtime = "edge";
+
+// Add this type at the top of the file, after the imports
+type CountryCode = 'AD' | 'AE' | 'AG' | 'AL' | 'AM' | 'AO' | 'AR' | 'AT' | 'AU' | 'AZ' | 'BA' | 'BB' | 'BD' | 'BE' | 'BF' | 'BG' | 'BH' | 'BI' | 'BJ' | 'BN' | 'BO' | 'BR' | 'BS' | 'BT' | 'BW' | 'BY' | 'BZ' | 'CA' | 'CD' | 'CG' | 'CH' | 'CI' | 'CL' | 'CM' | 'CO' | 'CR' | 'CV' | 'CW' | 'CY' | 'CZ' | 'DE' | 'DJ' | 'DK' | 'DM' | 'DO' | 'DZ' | 'EC' | 'EE' | 'EG' | 'ES' | 'ET' | 'FI' | 'FJ' | 'FM' | 'FR' | 'GA' | 'GB' | 'GD' | 'GE' | 'GH' | 'GM' | 'GN' | 'GQ' | 'GR' | 'GT' | 'GW' | 'GY' | 'HK' | 'HN' | 'HR' | 'HT' | 'HU' | 'ID' | 'IE' | 'IL' | 'IN' | 'IQ' | 'IS' | 'IT' | 'JM' | 'JO' | 'JP' | 'KE' | 'KG' | 'KH' | 'KI' | 'KM' | 'KN' | 'KR' | 'KW' | 'KZ' | 'LA' | 'LB' | 'LC' | 'LI' | 'LK' | 'LR' | 'LS' | 'LT' | 'LU' | 'LV' | 'LY' | 'MA' | 'MC' | 'MD' | 'ME' | 'MG' | 'MH' | 'MK' | 'ML' | 'MN' | 'MO' | 'MR' | 'MT' | 'MU' | 'MV' | 'MW' | 'MX' | 'MY' | 'MZ' | 'NA' | 'NE' | 'NG' | 'NI' | 'NL' | 'NO' | 'NP' | 'NR' | 'NZ' | 'OM' | 'PA' | 'PE' | 'PG' | 'PH' | 'PK' | 'PL' | 'PR' | 'PS' | 'PT' | 'PW' | 'PY' | 'QA' | 'RO' | 'RS' | 'RW' | 'SA' | 'SB' | 'SC' | 'SE' | 'SG' | 'SI' | 'SK' | 'SL' | 'SM' | 'SN' | 'SR' | 'ST' | 'SV' | 'SZ' | 'TD' | 'TG' | 'TH' | 'TJ' | 'TL' | 'TN' | 'TO' | 'TR' | 'TT' | 'TV' | 'TW' | 'TZ' | 'UA' | 'UG' | 'US' | 'UY' | 'UZ' | 'VC' | 'VE' | 'VN' | 'VU' | 'WS' | 'XK' | 'ZA' | 'ZM' | 'ZW';
+
+// Add this interface near the top of the file, after the CountryCode type
+interface Track {
+  id: string;
+  name: string;
+  artist: string;
+  popularity: number;
+  previewUrl: string | null;
+  image: string;
+  url: string;
+}
 
 // Function to get Spotify access token
 const getAccessToken = async () => {
@@ -26,11 +38,27 @@ const getAccessToken = async () => {
   return data.access_token;
 };
 
-// Function to fetch random tracks from Spotify
-//@ts-ignore
-const fetchRandomTracks = async (accessToken) => {
+
+const fetchRandomTracks = async (accessToken: string) => {
+  const getUserLocation = async (): Promise<CountryCode> => {
+    try {
+      const response = await fetch('/api/location');
+      const countryCode = await response.text(); // Since we're returning just the country code
+      const supportedCountries: CountryCode[] = ["AD", "AE", "AG", "AL", "AM", "AO", "AR", "AT", "AU", "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ", "BN", "BO", "BR", "BS", "BT", "BW", "BY", "BZ", "CA", "CD", "CG", "CH", "CI", "CL", "CM", "CO", "CR", "CV", "CW", "CY", "CZ", "DE", "DJ", "DK", "DM", "DO", "DZ", "EC", "EE", "EG", "ES", "ET", "FI", "FJ", "FM", "FR", "GA", "GB", "GD", "GE", "GH", "GM", "GN", "GQ", "GR", "GT", "GW", "GY", "HK", "HN", "HR", "HT", "HU", "ID", "IE", "IL", "IN", "IQ", "IS", "IT", "JM", "JO", "JP", "KE", "KG", "KH", "KI", "KM", "KN", "KR", "KW", "KZ", "LA", "LB", "LC", "LI", "LK", "LR", "LS", "LT", "LU", "LV", "LY", "MA", "MC", "MD", "ME", "MG", "MH", "MK", "ML", "MN", "MO", "MR", "MT", "MU", "MV", "MW", "MX", "MY", "MZ", "NA", "NE", "NG", "NI", "NL", "NO", "NP", "NR", "NZ", "OM", "PA", "PE", "PG", "PH", "PK", "PL", "PR", "PS", "PT", "PW", "PY", "QA", "RO", "RS", "RW", "SA", "SB", "SC", "SE", "SG", "SI", "SK", "SL", "SM", "SN", "SR", "ST", "SV", "SZ", "TD", "TG", "TH", "TJ", "TL", "TN", "TO", "TR", "TT", "TV", "TW", "TZ", "UA", "UG", "US", "UY", "UZ", "VC", "VE", "VN", "VU", "WS", "XK", "ZA", "ZM", "ZW"];
+      
+      return supportedCountries.includes(countryCode as CountryCode) 
+        ? (countryCode as CountryCode) 
+        : 'US';
+    } catch (error) {
+      console.error('Error getting location:', error);
+      return 'US';
+    }
+  };
+
+  const market = await getUserLocation();
+  console.log(market);
   const response = await fetch(
-    "https://api.spotify.com/v1/search?q=year:2000-2024&type=track&limit=50&market=IN",
+    `https://api.spotify.com/v1/search?q=year:2000-2024&type=track&limit=50&market=${market}`,
     {
       headers: {
         Authorization: "Bearer " + accessToken,
@@ -41,25 +69,27 @@ const fetchRandomTracks = async (accessToken) => {
   const data = await response.json();
   //@ts-ignore
   return data.tracks.items.map((track) => ({
-    id: track.id,
+    id: `${track.id}`,
     name: track.name,
     artist: track.artists[0].name,
     popularity: track.popularity,
-    previewUrl: track.preview_url,
+    previewUrl: track.preview_url || null,
     image: track.album.images[0].url,
+    url: `https://open.spotify.com/embed/track/${track.id}`,
   }));
 };
 
 const SpotifyPopularityGame = () => {
   const router = useRouter();
   const [tracks, setTracks] = useState([]);
-  const [currentPair, setCurrentPair] = useState([]);
+  const [currentPair, setCurrentPair] = useState<Track[]>([]);
   const [score, setScore] = useState(0);
   const [highScore, setHighScore] = useState(0);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showAnimation, setShowAnimation] = useState(false);
+
 
   useEffect(() => {
     const storedHighScore = localStorage.getItem('highScore');
@@ -104,7 +134,7 @@ const SpotifyPopularityGame = () => {
     //@ts-ignore
     const otherTrack = currentPair.find((track) => track.id !== guessedTrack.id);
     //@ts-ignore
-    if (guessedTrack.popularity > otherTrack.popularity) {
+    if (guessedTrack.popularity >= otherTrack.popularity) {
       const newScore = score + 1;
       setScore(newScore);
 
@@ -130,7 +160,16 @@ const SpotifyPopularityGame = () => {
   };
 
   if (isLoading) {
-    return <div className="text-center mt-8">Loading tracks...</div>;
+    return (    
+    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-black via-purple-900 to-black relative overflow-hidden">
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute w-96 h-96 -left-48 -top-48 bg-blue-500 rounded-full mix-blend-screen animate-pulse filter blur-xl"></div>
+        <div className="absolute w-96 h-96 -right-48 -bottom-48 bg-purple-500 rounded-full mix-blend-screen animate-pulse filter blur-xl"></div>
+        <div className="absolute w-96 h-96 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-pink-500 rounded-full mix-blend-screen animate-pulse filter blur-xl"></div>
+        <div className="text-center text-5xl mt-36 font-bold text-white">Loading tracks...</div>
+      </div>
+    </div>
+    );
   }
 
   if (error) {
@@ -139,51 +178,40 @@ const SpotifyPopularityGame = () => {
 
 
   return (
-    <div className="p-4 max-w-4xl mx-auto relative"> 
-      <h1 className="text-2xl font-bold mb-4 text-center">Spotify Popularity Game</h1>
-      <div className="text-center mb-4"></div>
-      {message && (
-        <div className="mb-4 p-2 bg-blue-100 text-blue-700 rounded flex items-center justify-center">
-          <AlertCircle className="mr-2" />
-          {message}
-        </div>
-      )}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-20">
-        {currentPair.map(
-          (
-            track: any 
-          ) => (
-            <div>
-              <Card key={track.id} className="flex flex-col h-full">
-                <img src={track.image} alt={track.name} className="h-fit" />
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Music className="mr-2" />
-                    {track.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="flex-grow flex flex-col justify-between">
-                  <p>{track.artist}</p>
-                  {track.previewUrl && (
-                    <audio controls className="w-full mt-2">
-                      <source src={track.previewUrl} type="audio/mpeg" />
-                      Your browser does not support the audio element.
-                    </audio>
-                  )}
-                  <Button onClick={() => handleGuess(track)} className="mt-4 w-full">
-                    This
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
-          )
-        )}
+    <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-black via-purple-900 to-black relative overflow-hidden">
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute w-96 h-96 -left-48 -top-48 bg-blue-500 rounded-full mix-blend-screen animate-pulse filter blur-xl"></div>
+        <div className="absolute w-96 h-96 -right-48 -bottom-48 bg-purple-500 rounded-full mix-blend-screen animate-pulse filter blur-xl"></div>
+        <div className="absolute w-96 h-96 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-pink-500 rounded-full mix-blend-screen animate-pulse filter blur-xl"></div>
       </div>
-      <div></div>
-      {showAnimation && (
-        <div className="score-animation">+1</div> 
-      )}
-      <p className="text-2xl font-bold flex justify-center p-5">Score: {score}</p>
+      
+      <div className="p-4 max-w-4xl mx-auto relative z-10"> 
+        <h1 className="text-2xl font-bold mb-4 text-center text-white">Guess which song is trending ?</h1>
+        <div className="text-center mt-5"></div>
+        {message && <p className="text-2xl font-bold flex justify-center p-5 text-white">{message}</p>}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-20 mt-10">
+          {currentPair.map((track: Track) => (
+            <div key={track.id} className="flex flex-col items-center">
+              <iframe 
+                src={track.url}
+                width="380" 
+                height="380"
+                allowFullScreen
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+              ></iframe>
+              <Button onClick={() => handleGuess(track)} className="mt-4 w-full bg-neutral-900 text-lg">
+                {track.id === `${currentPair[0].id}` ? 'Pick me bruh! 🔥' : 'No no, pick ME! ✨'}
+              </Button>
+            </div>
+          ))}
+        </div>
+        <div></div>
+        {showAnimation && (
+          <div className="score-animation">+1</div> 
+        )}
+        <p className="text-2xl font-bold flex justify-center p-5 text-white">Score: {score}</p>
+      </div>
     </div>
   );
 };
